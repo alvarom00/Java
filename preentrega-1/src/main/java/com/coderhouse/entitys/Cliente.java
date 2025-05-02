@@ -81,6 +81,14 @@ public class Cliente {
 		return Objects.hash(apellido, dni, id, nombre);
 	}
 
+	public List<Factura> getFacturas() {
+		return facturas;
+	}
+
+	public void setFacturas(List<Factura> facturas) {
+		this.facturas = facturas;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

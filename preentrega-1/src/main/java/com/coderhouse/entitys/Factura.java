@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -38,7 +41,11 @@ public class Factura {
 			joinColumns = @JoinColumn(name = "factura_id"),
 			inverseJoinColumns = @JoinColumn(name = "cliente_id")
 			)
+	@JsonIgnore
 	private List<Cliente> clientes = new ArrayList<>();
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	private Producto producto;
 	
 	public Factura() {
 		super();
@@ -74,11 +81,34 @@ public class Factura {
 	public void setMontoTotal(Double montoTotal) {
 		this.montoTotal = montoTotal;
 	}
+	
+	public int getNroFactura() {
+		return nroFactura;
+	}
+
+	public void setNroFactura(int nroFactura) {
+		this.nroFactura = nroFactura;
+	}
+
+	public List<Cliente> getClientes() {
+		return clientes;
+	}
+
+	public void setClientes(List<Cliente> clientes) {
+		this.clientes = clientes;
+	}
+
+	public Producto getProducto() {
+		return producto;
+	}
+
+	public void setProducto(Producto producto) {
+		this.producto = producto;
+	}
 
 	@Override
 	public String toString() {
 		return "Factura [id=" + id + ", fecha=" + fecha + ", montoTotal=" + montoTotal + ", clientes=" + clientes + "]";
 	}
-
 	
 }

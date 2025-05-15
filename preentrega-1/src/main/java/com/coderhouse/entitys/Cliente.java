@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -11,70 +16,43 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
+
+@Data
 @Entity
+@Schema(description = "Modelo de Cliente")
 @Table(name = "Clientes")
 public class Cliente {
 	
+	@Schema(description = "ID del Cliente", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+	@Schema(description = "Nombre del Cliente", requiredMode = Schema.RequiredMode.REQUIRED, example = "Alvaro")
 	@Column(name = "Nombre", nullable = false)
     private String nombre;
 
+	@Schema(description = "Apellido del Cliente", requiredMode = Schema.RequiredMode.REQUIRED, example = "Manterola")
 	@Column(name = "Apellido", nullable = false)
     private String apellido;
 
+	@Schema(description = "DNI del Cliente", requiredMode = Schema.RequiredMode.REQUIRED, example = "12345678")
 	@Column(name = "DNI", nullable = false, unique = true)
-    private int dni;
+    private String dni;
     
-	@ManyToMany(mappedBy = "clientes", fetch = FetchType.EAGER)
-    private List<Factura> facturas = new ArrayList<>();
-
-	public Cliente() {
-		super();
-	}
-
-	public Cliente(String nombre, String apellido, int dni) {
-		super();
-		this.nombre = nombre;
-		this.apellido = apellido;
-		this.dni = dni;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getNombre() {
-		return nombre;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
-
-	public String getApellido() {
-		return apellido;
-	}
-
-	public void setApellido(String apellido) {
-		this.apellido = apellido;
-	}
-
-	public int getDni() {
-		return dni;
-	}
-
-	public void setDni(int dni) {
-		this.dni = dni;
-	}
+	@Schema(description = "Facturas del Cliente", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+	@OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonManagedReference
+	private List<Factura> facturas = new ArrayList<>();
 
 	@Override
 	public int hashCode() {

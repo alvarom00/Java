@@ -1,6 +1,8 @@
 package com.coderhouse.services;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,17 +32,33 @@ public class ProductoService implements CRUDInterface<Producto, Long> {
 	@Override
 	@Transactional
 	public Producto save(Producto nuevoProducto) {
+		Optional<Producto> existente = productoRepository.findByNombre(nuevoProducto.getNombre());
+	    
+	    if (existente.isPresent()) {
+	        throw new IllegalArgumentException("Ya existe un producto con ese nombre");
+	    }
 		return productoRepository.save(nuevoProducto);
 	}
 
 	@Override
 	@Transactional
-	public Producto update(Long id, Producto productoActualizado) {
-		Producto producto = productoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Producto no encontrado."));
-		if(productoActualizado.getNombre() != null && !productoActualizado.getNombre().isEmpty()) {
-			producto.setNombre(productoActualizado.getNombre());
-		}
-		return productoRepository.save(producto);
+	public Producto update(Long productoId, Producto productoActualizado) {
+	    Producto productoExistente = productoRepository.findById(productoId)
+	            .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
+
+	    if (productoActualizado.getNombre() != null) {
+	        productoExistente.setNombre(productoActualizado.getNombre());
+	    }
+
+	    if (productoActualizado.getPrecio() != null) {
+	        productoExistente.setPrecio(productoActualizado.getPrecio());
+	    }
+
+	    if (productoActualizado.getStock() != null) {
+	        productoExistente.setStock(productoActualizado.getStock());
+	    }
+
+	    return productoRepository.save(productoExistente);
 	}
 
 	@Override
@@ -50,5 +68,6 @@ public class ProductoService implements CRUDInterface<Producto, Long> {
 		}
 		productoRepository.deleteById(id);
 	}
+
 
 }

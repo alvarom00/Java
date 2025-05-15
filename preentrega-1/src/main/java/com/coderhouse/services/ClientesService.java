@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.coderhouse.apis.ClienteRestApi;
 import com.coderhouse.entitys.Cliente;
 import com.coderhouse.interfaces.CRUDInterface;
 import com.coderhouse.repositories.ClienteRepository;
@@ -44,13 +45,15 @@ public class ClientesService implements CRUDInterface<Cliente, Long> {
 			cliente.setApellido(clienteActualizado.getApellido());
 		}
 		
-		if(clienteActualizado.getDni() != 0) {
+		if(clienteActualizado.getDni() != null) {
 			cliente.setDni(clienteActualizado.getDni());
 		}
 		
-		if(clienteActualizado.getDni() != 0) {
+		if(clienteActualizado.getDni() != null) {
 			cliente.setDni(clienteActualizado.getDni());
 		}
+		
+		cliente.setId(id);
 		return clienteRepository.save(cliente);
 	}
 

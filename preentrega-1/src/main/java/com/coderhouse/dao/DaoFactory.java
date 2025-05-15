@@ -77,14 +77,14 @@ public class DaoFactory {
 			throw new Exception("El producto con ID: " + productoId + " no existe.");
 		}
 		
-		factura.setProducto(producto);
+		factura.getProductos().add(producto);
 		
 		em.merge(factura);
 	}
 	
 	@Transactional
 	public void asignarFacturasACliente(Long clienteId, List<Long> facturaIds) throws Exception {
-	    
+
 	    Cliente cliente = getClienteById(clienteId);
 	    if (cliente == null) {
 	        throw new Exception("El cliente con ID: " + clienteId + " no existe.");
@@ -96,12 +96,14 @@ public class DaoFactory {
 	            throw new Exception("La factura con ID: " + facturaId + " no existe.");
 	        }
 
-	        if (!factura.getClientes().contains(cliente)) {
-	            factura.getClientes().add(cliente);
+	        if (factura.getCliente() != null && !factura.getCliente().getId().equals(clienteId)) {
+	            throw new Exception("La factura con ID: " + facturaId + " ya está asignada a otro cliente.");
 	        }
 
+	        factura.setCliente(cliente);
 	        em.merge(factura);
 	    }
 	}
+
 
 }
